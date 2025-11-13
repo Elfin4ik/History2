@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ Фернан Магеллан: Навколосвітня Подорож (Фінальна версія)</title>
+    <style>
+        /* =======================================================
+           СЕКЦІЯ CSS
+           ======================================================= */
+        :root {
+            --primary-color: #004d99; /* Глибокий синій */
+            --secondary-color: #ff9933; /* Помаранчевий */
+            --text-color: #333;
+            --bg-color: #f4f7f6; /* Основний фон сторінки (м'який сірий) */
+            --card-bg: #fdfdfd; /* Змінено: Дуже світлий, майже білий фон для вкладок */
+            --success-color: #28a745; 
+            --error-color: #dc3545; 
+            --soft-blue-bg: #e0f7fa; /* Фон хедера */
+            --soft-dark-text: #1a237e; /* Темний текст для світлого фону */
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Змінений фон хедера для м'якшого вигляду */
+        header {
+            background-color: var(--soft-blue-bg); 
+            color: var(--soft-dark-text); 
+            padding: 100px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-image: linear-gradient(135deg, var(--soft-blue-bg) 0%, #b3e5fc 100%);
+            background-size: cover;
+            background-attachment: fixed; 
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Навігація */
+        nav {
+            background-color: #003366;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .nav-links li button:hover, .nav-links li button.active {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        /* Основний контент */
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Зміна білого фону вкладок на м'який сірий (card-bg) */
+        .content-section {
+            display: none;
+            background-color: var(--card-bg); /* Використання м'якого кольору */
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .content-section h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        #conclusion h3 {
+            color: var(--secondary-color);
+            margin-top: 15px;
+        }
+        
+        /* СТИЛІ ТЕСТУ */
+        .answer-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .answer-button.correct {
+            background-color: var(--success-color) !important;
+        }
+
+        .answer-button.incorrect {
+            background-color: var(--error-color) !important;
+        }
+        
+        .correct-text { color: var(--success-color); }
+        .incorrect-text { color: var(--error-color); }
+
+        /* СЕКЦІЯ ФАКТІВ */
+        #fact-display {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 8px;
+            font-size: 1.3em;
+            max-width: 800px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Змінена кнопка фактів на білу */
+        #fact-button {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 10px 20px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #fact-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .ship-card {
+            background-color: var(--bg-color);
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, background-color 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .ship-card-details {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            padding-top: 0;
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        .ship-card.open .ship-card-details {
+            max-height: 200px; 
+            opacity: 1;
+            padding-top: 10px;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -13px;
+            background-color: white;
+            border: 4px solid var(--secondary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        .right::after {
+            left: -12px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: var(--card-bg);
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧭 Фернан Магеллан: Перша Навколосвітня Подорож</h1>
+        <p>Людина, що обігнула Землю та відкрила Тихий океан</p>
+    </header>
+
+    <nav>
+        <ul class="nav-links">
+            <li><button onclick="showSection('home', this)" class="active">🏠 Головна</button></li>
+            <li><button onclick="showSection('ships', this)">⛵ Кораблі</button></li> 
+            <li><button onclick="showSection('expedition', this)">⏳ Хронологія</button></li>
+            <li><button onclick="showSection('strait', this)">🌊 Відкриття</button></li>
+            <li><button onclick="showSection('quiz', this)">✅ Міні-Тест</button></li>
+            <li><button onclick="showSection('facts', this)">💡 Факти</button></li>
+            <li><button onclick="showSection('conclusion', this)">⭐ Висновок</button></li> 
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="content-section" style="display: block;">
+            <h2>Ласкаво просимо!</h2>
+            <p>Цей сайт присвячений історичній подорожі **Фернана Магеллана**, португальського мореплавця, який очолив іспанську експедицію, що здійснила перше в історії навколосвітнє плавання.</p>
+            <div class="card-container">
+                <div class="card">
+                    <h3>Дата</h3>
+                    <p><strong>Початок:</strong> 20 вересня 1519 р.</p>
+                    <p><strong>Завершення:</strong> 6 вересня 1522 р.</p>
+                </div>
+                <div class="card">
+                    <h3>Мета</h3>
+                    <p>Знайти **західний шлях** до Молуккських островів (Островів Прянощів) для Іспанії.</p>
+                </div>
+                <div class="card">
+                    <h3>Результат</h3>
+                    <p>Доведення **кулястості Землі** та відкриття **Магелланової протоки** і **Тихого океану**.</p>
+                </div>
+            </div>
+            <p><em>"Подорож — це не лише рух у просторі, а й пізнання істини."</em></p>
+        </section>
+
+        <section id="ships" class="content-section">
+            <h2>⛵ Кораблі Великої Армади (1519)</h2>
+            <p>Експедиція Магеллана розпочалася з 5 кораблів. Лише один, "Вікторія", повернувся додому. Натисніть на картку, щоб дізнатися більше.</p>
+
+            <div class="card-container">
+                <div class="ship-card" onclick="toggleDetails(this)">
+                    <h3>⭐ Вікторія (Victoria)</h3>
+                    <p><strong>Доля:</strong> **Єдиний корабель, що повернувся.**</p>
+                    <div class="ship-card-details">
+                        <p>На борту було лише **18** моряків, коли він завершив подорож. Названий на честь церкви Санта-Марія-де-ла-Вікторія.</p>
+                    </div>
+                </div>
+
+                <div class="ship-card" onclick="toggleDetails(this)">
+                    <h3>⚓ Тринідад (Trinidad)</h3>
+                    <p><strong>Доля:</strong> Флагман. Затонув після невдалої спроби повернутися.</p>
+                    <div class="ship-card-details">
+                        <p>Корабель, на якому плив сам Магеллан. Був сильно пошкоджений і не зміг продовжити подорож, його екіпаж був захоплений португальцями.</p>
+                    </div>
+                </div>
+
+                <div class="ship-card" onclick="toggleDetails(this)">
+                    <h3>🗡️ Сан-Антоніо (San Antonio)</h3>
+                    <p><strong>Доля:</strong> **Дезертирував** у Магеллановій протоці (1520).</p>
+                    <div class="ship-card-details">
+                        <p>Найбільший корабель. Його капітан, Естебан Гомес, очолив бунт і повернувся до Іспанії, де звинуватив Магеллана в зраді.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="expedition" class="content-section">
+            <h2>⏳ Хронологія Навколосвітньої Подорожі</h2>
+            <p>Важливі віхи подорожі, що тривала 3 роки.</p>
+
+            <div class="timeline">
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>1519: Старт</h3>
+                        <p><strong>20 вересня.</strong> Флотилія (5 кораблів) вирушила з Іспанії. Подорож до Бразилії.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <h3>1520: Відкриття Протоки</h3>
+                        <p>Жовтень. Знайдено прохід на півдні Америки. Відкрито і пройдено **Магелланову протоку**.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>1520: Тихий Океан</h3>
+                        <p>Листопад. Вхід у новий океан. Починається **99-денний голодний перехід** без поповнення запасів.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <h3>1521: Смерть Магеллана</h3>
+                        <p>27 квітня. Магеллан загинув на острові **Мактан** (Філіппіни) у сутичці з місцевим населенням.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>1521-1522: Острови Прянощів</h3>
+                        <p>Пошук і завантаження прянощами на Молуккських островах. З трьох кораблів залишився лише один – "Вікторія".</p>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <h3>1522: Фініш</h3>
+                        <p>6 вересня. **"Вікторія"** під командуванням Хуана Себастьяна Елькано повернулася до Севільї.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strait" class="content-section">
+            <h2>🌊 Головні Географічні Відкриття</h2>
+            <div class="card-container">
+                <div class="card">
+                    <h3>Магелланова Протока</h3>
+                    <p>Протока залишалася головним морським шляхом між Атлантичним та Тихим океанами до відкриття **Панамського каналу в 1914 році**.</p>
+                </div>
+                <div class="card">
+                    <h3>Тихий Океан</h3>
+                    <p>Названий **"Mar Pacífico"** (Спокійне море) через сприятливу погоду, яку Магеллан застав після штормової Атлантики. Перехід показав, що океан значно більший.</p>
+                </div>
+                <div class="card">
+                    <h3>Лінія Дат</h3>
+                    <p>Екіпаж корабля "Вікторія" виявив, що загубив **один день календаря** під час плавання навколо світу, що пізніше призвело до створення **Міжнародної лінії зміни дат**.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ Міні-Тест "Перевір себе"</h2>
+            <p>Перевірте, наскільки добре ви запам'ятали ключові факти про експедицію.</p>
+
+            <div id="quiz-container">
+                <div class="question-block" id="q1">
+                    <h3>1. Яка була головна ціль експедиції Магеллана, фінансована Іспанією?</h3>
+                    <button class="answer-button" data-question="q1" data-answer="b">Знайти західний шлях до Островів Прянощів</button>
+                    <button class="answer-button" data-question="q1" data-answer="c">Скласти карту Африки</button>
+                    <button class="answer-button" data-question="q1" data-answer="a">Довести, що Земля плоска</button>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-block" id="q2">
+                    <h3>2. Хто насправді завершив навколосвітню подорож як капітан "Вікторії"?</h3>
+                    <button class="answer-button" data-question="q2" data-answer="b">Фернан Магеллан</button>
+                    <button class="answer-button" data-question="q2" data-answer="a">Хуан Себастьян Елькано</button>
+                    <button class="answer-button" data-question="q2" data-answer="c">Енріке Малаккський</button>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-block" id="q3">
+                    <h3>3. На якому острові загинув Фернан Магеллан?</h3>
+                    <button class="answer-button" data-question="q3" data-answer="b">Острів Ява</button>
+                    <button class="answer-button" data-question="q3" data-answer="a">Острів Мактан (Філіппіни)</button>
+                    <button class="answer-button" data-question="q3" data-answer="c">Острів Прянощів (Молукки)</button>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="question-block" id="q4">
+                    <h3>4. Чому Магеллан назвав океан "Тихим"?</h3>
+                    <button class="answer-button" data-question="q4" data-answer="a">Там жили миролюбні племена</button>
+                    <button class="answer-button" data-question="q4" data-answer="b">Він шукав усамітнення</button>
+                    <button class="answer-button" data-question="q4" data-answer="c">Через незвично спокійну погоду під час переходу</button>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="question-block" id="q5">
+                    <h3>5. Скільки кораблів повернулося до Іспанії?</h3>
+                    <button class="answer-button" data-question="q5" data-answer="b">П'ять</button>
+                    <button class="answer-button" data-question="q5" data-answer="a">Один</button>
+                    <button class="answer-button" data-question="q5" data-answer="c">Три</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="facts" class="content-section">
+            <h2>💡 Додаткові Факти</h2>
+            <p>Натискайте кнопку, щоб дізнатися новий, маловідомий факт про експедицію Магеллана.</p>
+            <div id="facts-container">
+                <div id="fact-display">
+                    Натисніть кнопку, щоб побачити перший факт!
+                </div>
+                <button id="fact-button" onclick="displayRandomFact()">Наступний Факт →</button>
+            </div>
+        </section>
+        
+        <section id="conclusion" class="content-section">
+            <h2>⭐ Висновок та Технічна Інформація</h2>
+            <p>Цей односторінковий додаток (SPA) був створений для демонстрації ключових історичних фактів про навколосвітню подорож Фернана Магеллана в інтерактивній формі.</p>
+
+            <h3>Ким виконано?</h3>
+            <p>Дизайн, структура та функціонал були розроблені Лінником Іллєю.</p>
+
+            <h3>Обсяг Коду</h3>
+            <p>Загальна кількість символів у цьому фінальному HTML-файлі (включаючи HTML-розмітку, CSS-стилі та JavaScript-функціонал) становить: **~ 17 600 символів**.</p>
+            
+            <h3>Резюме Проекту</h3>
+            <p>Проект успішно поєднує історичні дані з сучасними веб-технологіями, забезпечуючи:</p>
+            <ul>
+                <li>Чітку навігацію по ключових етапах експедиції.</li>
+                <li>Інтерактивні картки кораблів та анімований таймлайн.</li>
+                <li>Міні-тест для закріплення знань.</li>
+                <li>Візуально м'який дизайн, що не "б'є в очі".</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        // --- ЗАГАЛЬНІ ФУНКЦІЇ ---
+
+        function showSection(sectionId, clickedButton) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+
+            document.querySelectorAll('.nav-links li button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
+            document.querySelector('main').scrollIntoView();
+        }
+
+        // --- ІНТЕРАКТИВ 1: МІНІ-ТЕСТ ---
+        
+        const quizAnswers = {
+            'q1': {
+                correct: 'b',
+                feedback: {
+                    a: "Неправильно. Доведення кулястості було побічним результатом.",
+                    b: "Вірно! Головна ціль – знайти Молуккські острови (Островів Прянощів).",
+                    c: "Неправильно. Цим шляхом займалися пізніше."
+                }
+            },
+            'q2': {
+                correct: 'a',
+                feedback: {
+                    a: "Вірно! Хуан Себастьян Елькано завершив подорож.",
+                    b: "Неправильно. Магеллан загинув.",
+                    c: "Неправильно. Він був перекладачем."
+                }
+            },
+            'q3': {
+                correct: 'a',
+                feedback: {
+                    a: "Вірно! Він загинув у битві з тубільцями на чолі з Лапу-Лапу.",
+                    b: "Неправильно. Це занадто далеко від Філіппін.",
+                    c: "Неправильно. Молукки були метою, але не місцем його смерті."
+                }
+            },
+            'q4': {
+                correct: 'c',
+                feedback: {
+                    a: "Неправильно. Назва стосувалася моря.",
+                    b: "Неправильно. Це романтична версія.",
+                    c: "Вірно! Перехід через океан був надзвичайно спокійним, на відміну від Атлантики."
+                }
+            },
+            'q5': {
+                correct: 'a',
+                feedback: {
+                    a: "Вірно! Це був лише один корабель – «Вікторія».",
+                    b: "Неправильно. Вийшло п'ять, але повернувся лише один.",
+                    c: "Неправильно. Лише «Вікторія» досягла Іспанії."
+                }
+            }
+        };
+
+        function checkAnswer(questionId, selectedAnswer) {
+            const questionBlock = document.getElementById(questionId);
+            const buttons = questionBlock.querySelectorAll('.answer-button');
+            const feedbackDiv = questionBlock.querySelector('.feedback');
+            const data = quizAnswers[questionId];
+
+            buttons.forEach(btn => btn.disabled = true);
+            feedbackDiv.classList.remove('correct-text', 'incorrect-text');
+
+            buttons.forEach(btn => {
+                const btnAnswer = btn.getAttribute('data-answer');
+                if (btnAnswer === selectedAnswer) {
+                    btn.classList.add(btnAnswer === data.correct ? 'correct' : 'incorrect');
+                } else if (btnAnswer === data.correct) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            if (selectedAnswer === data.correct) {
+                feedbackDiv.classList.add('correct-text');
+            } else {
+                feedbackDiv.classList.add('incorrect-text');
+            }
+
+            feedbackDiv.textContent = data.feedback[selectedAnswer];
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.answer-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const questionId = e.target.closest('.question-block').id;
+                    const selectedAnswer = e.target.getAttribute('data-answer');
+                    checkAnswer(questionId, selectedAnswer);
+                });
+            });
+        });
+
+        // --- ІНТЕРАКТИВ 2: ДЕТАЛІЗАЦІЯ КОРАБЛІВ ---
+        function toggleDetails(card) {
+            card.classList.toggle('open');
+        }
+
+
+        // --- ІНТЕРАКТИВ 3: ФАКТИ ---
+        const historicalFacts = [
+            "Раб-перекладач Магеллана, Енріке, можливо, став першою людиною, яка обігнула Землю, відвідавши обидві півкулі.",
+            "З 270 моряків, до Іспанії повернулося лише 18. Основною причиною смерті була цинга та голод.",
+            "Через брак провізії під час перетину Тихого океану моряки їли шкіряні ремені, тирсу та щурів. Щури коштували дорожче за золото.",
+            "Експедиція відкрила нові сузір'я Південної півкулі, які тепер називаються **Магеллановими Хмарами**.",
+            "Вартість прянощів, доставлених «Вікторією», **повністю окупила** всі витрати на експедицію, що довело економічний успіх плавання."
+        ];
+
+        let lastFactIndex = -1;
+
+        function displayRandomFact() {
+            let randomIndex;
+            
+            do {
+                randomIndex = Math.floor(Math.random() * historicalFacts.length);
+            } while (randomIndex === lastFactIndex && historicalFacts.length > 1);
+
+            const fact = historicalFacts[randomIndex];
+            document.getElementById('fact-display').textContent = fact;
+            lastFactIndex = randomIndex;
+        }
+
+        // Ініціалізація фактів
+        document.addEventListener('DOMContentLoaded', () => {
+            displayRandomFact();
+        });
+    </script>
+</body>
+</html>
